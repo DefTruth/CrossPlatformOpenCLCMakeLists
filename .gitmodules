@@ -1,3 +1,6 @@
 [submodule "example/openclhelpers"]
 	path = example/openclhelpers
 	url = https://git.fh-muenster.de/NTLab/CodeReUse/cPlusPlus/openclhelpers.git
+[submodule "src/openclhelpers"]
+	path = src/openclhelpers
+	url = https://git.fh-muenster.de/NTLab/CodeReUse/cPlusPlus/openclhelpers.git
