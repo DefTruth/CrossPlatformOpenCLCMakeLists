@@ -24,11 +24,11 @@ set (CMAKE_CXX_STANDARD 17)
 
 # Project specific settings
 project (CrossPlatformOpenCL)
-set (CLKernelName "testKernel")
+set (CLKernelName "vectorAdd")
 
 # Specify the executable ant its source files
-add_executable (HostApplication ${PROJECT_SOURCE_DIR}/examples/vectoradd/main.cpp)
-include_directories (${PROJECT_SOURCE_DIR}/examples/openclhelpers)
+add_executable (HostApplication ${PROJECT_SOURCE_DIR}/src/vectorAdd.cpp)
+include_directories (${PROJECT_SOURCE_DIR}/src/openclhelpers)
 #target_sources (HostApplication
 #        PRIVATE
 #        someSource.cpp
