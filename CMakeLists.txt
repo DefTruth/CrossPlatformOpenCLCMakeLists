@@ -17,7 +17,7 @@
 # SOFTWARE.
 
 
-cmake_minimum_required (VERSION 3.13)
+cmake_minimum_required (VERSION 3.12)
 
 # Using C++ 17 - You might want to change that to your needs
 set (CMAKE_CXX_STANDARD 17)
