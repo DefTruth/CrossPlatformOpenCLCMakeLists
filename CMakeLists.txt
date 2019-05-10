@@ -65,7 +65,7 @@ if (OPEN_CL_INTEL_FPGA)
     add_compile_definitions (OPEN_CL_INTEL_FPGA)
 
     #The Intel FPGA OpenCL SDK supports OpenCL 1.1 with some 2.0 feature additions
-    add_compile_definitions (CL_HPP_MINIMUM_OPENCL_VERSION=110 CL_HPP_TARGET_OPENCL_VERSION=110)
+    add_compile_definitions (CL_HPP_MINIMUM_OPENCL_VERSION=110 CL_HPP_TARGET_OPENCL_VERSION=200)
 
     # According to the reverse engineering, those libraries are needed for FPGA builds
     target_link_libraries (HostApplication rt pthread)
@@ -80,6 +80,9 @@ if (OPEN_CL_INTEL_FPGA)
     set (aoclExecutable      "${IntelFPGAOCLSDKRoot}/bin/aocl")
     set (aocExecutable       "${IntelFPGAOCLSDKRoot}/bin/aoc")
 
+    # Include the 2.0 OpenCL headers
+    include_directories ("${IntelFPGAOCLSDKRoot}/host/include20")
+
     # Pahts to directories the linker should use
     if (OPEN_CL_INTEL_FPGA STREQUAL "CROSS_COMPILING")
         set (BoardLibLinkerPath "${BoardPackageRoot}/arm32/lib")
@@ -93,17 +96,14 @@ if (OPEN_CL_INTEL_FPGA)
 
     # Get the additional compiler/linker flags for the host application as returned by the aocl tool
     if (OPEN_CL_INTEL_FPGA STREQUAL "CROSS_COMPILING")
-        execute_process (COMMAND bash -c "export AOCL_BOARD_PACKAGE_ROOT=${BoardPackageRoot}; ${aoclExecutable} compile-config --arm" OUTPUT_VARIABLE AoclCompileConfig)
         execute_process (COMMAND bash -c "export AOCL_BOARD_PACKAGE_ROOT=${BoardPackageRoot}; ${aoclExecutable} link-config --arm"    OUTPUT_VARIABLE AoclLinkConfig)
     else()
-        execute_process (COMMAND bash -c "${aoclExecutable} compile-config" OUTPUT_VARIABLE AoclCompileConfig)
         execute_process (COMMAND bash -c "${aoclExecutable} link-config"    OUTPUT_VARIABLE AoclLinkConfig)
     endif()
-    # Needed to remove linebreaks at the end of the strings fetched by execute_process above
-    string (STRIP "${AoclCompileConfig}" AoclCompileConfig)
+    # Needed to remove linebreaks at the end of the string fetched by execute_process above
     string (STRIP "${AoclLinkConfig}"    AoclLinkConfig)
+
     # Append the strings generated to the existing flags
-    set (CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} ${AoclCompileConfig}")
     set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${AoclLinkConfig}")
 
     # The custom command to call the open cl offline compiler with all relevant flags
