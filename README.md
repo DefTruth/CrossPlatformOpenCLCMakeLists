@@ -43,17 +43,22 @@ Don't forget to call `ldconfig` after having added those paths.
 
 In CLion you first need to set up an additional toolchain for cross compiling (File -> Settings -> Build, Execution, Deployment --> Toolchains)
 
-SCREENSHOT
+![](documentationScreenshots/Toolchains.png)
 
 After that you might want to add four additional profiles, a debug and release profile for both, simulation and cross compiling (File -> Settings -> Build, Execution, Deployment --> CMake)
 
-SCREENSHOTS
+![](documentationScreenshots/DebugFPGASimulation.png)
+![](documentationScreenshots/ReleaseFPGASimulation.png)
+![](documentationScreenshots/DebugFPGACrossCompiling.png)
+![](documentationScreenshots/ReleaseFPGACrossCompiling.png)
 
 Note that in my CLion version, you needed to set the environment variable with a click to the small button at the right of the Text field, values entered directly into the text field were dismissed after closing the window for unkown reasons.
 
 For remote debugging, you need to install gdb multiarch manually as for unknown reasons the gdb multiarch version bundled with CLion was not compatible with the gdb present on the system running on my Terasic development board. Simply call `sudo apt install gdb-multiarch`. After that you can create a debugging config like that:
 
-SCREENSHOT
+![](documentationScreenshots/FPGARemoteDebugging.png)
+
+(Note that there is an invalid path to the executable in the Symbol file field in the screenshot. This is just to clarify that you need to point to the location of the compiled executable for the target system on your system. If you chose a valid path, the warning you see in the screenshot will go away)
 
 ### Linux as native build environment
 
@@ -69,7 +74,7 @@ Now you only need to have an OpenCL enabled driver installed for your GPU, howev
 
 ### Mac OS as native build environment
 
-Mac OS comes with its own OpenCL framework and does not need further installations. However, you should be aware that OpenCL was deprecated with Mac OS Mojave and that current Macs only support OpenCL 1.2.
+Mac OS comes with its own OpenCL framework and does not need further installations. However, you should be aware that OpenCL was deprecated with Mac OS Mojave and that current Macs only support OpenCL 1.2. The CMake file defines a macro that silences depreciation warnings.
 
 ## Building
 
@@ -79,6 +84,8 @@ Just chose the profile you want to use in CLion and you are ready to go!
 
 I decided to exclude the step of copying the binary to the FPGA from the build process. You should do this manually via `scp`. On my terasic board, after a startup, you first need to source the `init_opencl` script once, otherwise no CL device will be found (`#source ./init_opencl.sh`)
 
-## Remote Debugging
+## Remote debugging an embedded system
 
-If you want to debug your OpenCL application running on an FPGA SoC with CLion you need to 
+If you want to debug your OpenCL application running on an FPGA SoC with CLion you need to launch the host application under gdb. To use the TCP connection as configured in the remote debug config above, establish an ssh or serial connection to the FPGA board, move to the executables folder and type `gdbserver host:1234 <./your host application> <optional args>`. Note that port `1234` is used here as an example, you can of course use any port you want to. After the gdbserver has started on the target system it will halt and wait for a remote debugging session to start. Move over to CLion on your build system, chose the remote debugging profile from the list at the upper right and click the bug icon beneath it to start a debugging session. If all went right, it will jump to the entry of your main function where you can press the play button in the debugging section at the lower left to start execution. You can also step through the code with the debugger from there on or set breakpoints, examine variables, etc, just like working within a native debugging session.
+
+Note that it might be helpful to suppress some realtime events that are not harmful but which stop the debugger for some reasons. To do so, go to the debugger console at the bottom of the window and type in `handle SIG44 noprint nostop` (or whichever signal you want to ignore).
