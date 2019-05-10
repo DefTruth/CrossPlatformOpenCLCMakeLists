@@ -72,6 +72,8 @@ You need some OpenCL SDK that delivers `opencl.lib`, against which you need to l
 
 Now you only need to have an OpenCL enabled driver installed for your GPU, however it is quite likely that your current driver supports OpenCL.
 
+On Windows, CLion currently does not support debugging when using the Visual Studio build system. However, Visual Studio 2017 also has the ability to use CMake as a project basis and seemed to work flawlessly with this CMake file and offers full debugging capabilities, so it might be worth a try for all Windows users to use Visual Studio instead of CLion for Windows development.
+
 ### Mac OS as native build environment
 
 Mac OS comes with its own OpenCL framework and does not need further installations. However, you should be aware that OpenCL was deprecated with Mac OS Mojave and that current Macs only support OpenCL 1.2. The CMake file defines a macro that silences depreciation warnings.
