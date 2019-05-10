@@ -167,7 +167,7 @@ else() # Building for standard CPU/GPU Platforms
         target_link_libraries (HostApplication "${WINDOWS_OPEN_CL_LIB_LOCATION}/opencl.lib")
 
     elseif (NOT APPLE)
-        target_link_libraries (HostApplication OpenCL)
+        target_link_libraries (HostApplication pthread OpenCL)
     endif()
 
 endif()
